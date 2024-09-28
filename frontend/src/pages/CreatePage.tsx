@@ -38,6 +38,26 @@ export default function CreatePage() {
                 setNewProduct({ ...newProduct, name: e.target.value })
               }
             />
+            <Input
+              placeholder="Price"
+              name="price"
+              type="number"
+              value={newProduct.price}
+              onChange={(e) =>
+                setNewProduct({
+                  ...newProduct,
+                  price: parseFloat(e.target.value) || 0,
+                })
+              }
+            />
+            <Input
+              placeholder="Image Url"
+              name="image"
+              value={newProduct.image}
+              onChange={(e) =>
+                setNewProduct({ ...newProduct, image: e.target.value })
+              }
+            />
           </VStack>
         </Box>
       </VStack>

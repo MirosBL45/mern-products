@@ -19,6 +19,7 @@ export default function Navbar() {
         alignItems={'center'}
         justifyContent={'space-between'}
         flexDir={{ base: 'column', sm: 'row' }}
+        mb={8}
       >
         <Text
           fontSize={{ base: '22', sm: '28' }}
@@ -27,6 +28,7 @@ export default function Navbar() {
           textAlign={'center'}
           bgGradient={'linear(to-r, cyan.400, blue.500)'}
           bgClip={'text'}
+          mb={1}
         >
           <Link to={'/'}>Product Store 🛒</Link>
         </Text>
