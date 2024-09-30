@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ProductProps } from '../types';
 import {
   Box,
+  Button,
   Container,
   Heading,
   Input,
@@ -15,6 +16,16 @@ export default function CreatePage() {
     price: 0,
     image: '',
   });
+
+  function handleAddProduct() {
+    console.log(newProduct);
+
+    setNewProduct({
+      name: '',
+      price: 0,
+      image: '',
+    });
+  }
 
   return (
     <Container maxW={'container.sm'}>
@@ -58,6 +69,9 @@ export default function CreatePage() {
                 setNewProduct({ ...newProduct, image: e.target.value })
               }
             />
+            <Button colorScheme="blue" onClick={handleAddProduct} w="full">
+              Add Product
+            </Button>
           </VStack>
         </Box>
       </VStack>
