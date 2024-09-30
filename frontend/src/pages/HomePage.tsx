@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
-import { Container, SimpleGrid, Text, VStack } from '@chakra-ui/react';
-import { useProductStore } from '../store/product';
 import { useEffect } from 'react';
+import { useProductStore } from '../store/product';
+import { Container, SimpleGrid, Text, VStack } from '@chakra-ui/react';
+import ProductCard from '../components/ProductCard';
 
 export default function HomePage() {
   const { fetchProducts, products } = useProductStore();
@@ -9,8 +10,6 @@ export default function HomePage() {
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
-
-  console.log(products);
 
   return (
     <Container maxW="container.xl" py={12}>
@@ -34,7 +33,9 @@ export default function HomePage() {
           spacing={10}
           w={'full'}
         >
-          rubi spava
+          {products.map((product) => (
+            <ProductCard key={product._id} product={product} />
+          ))}
         </SimpleGrid>
 
         <Text
