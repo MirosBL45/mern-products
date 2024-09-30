@@ -7,8 +7,10 @@ import {
   Heading,
   Input,
   useColorModeValue,
+  useToast,
   VStack,
 } from '@chakra-ui/react';
+import { useProductStore } from '../store/product';
 
 export default function CreatePage() {
   const [newProduct, setNewProduct] = useState<ProductProps>({
@@ -17,14 +19,39 @@ export default function CreatePage() {
     image: '',
   });
 
-  function handleAddProduct() {
-    console.log(newProduct);
+  const [loading, setLoading] = useState(false);
 
-    setNewProduct({
-      name: '',
-      price: 0,
-      image: '',
-    });
+  const toast = useToast();
+
+  const { createProduct } = useProductStore();
+
+  async function handleAddProduct() {
+    setLoading(true);
+
+    const { success, message } = await createProduct(newProduct);
+
+    if (!success) {
+      toast({
+        title: 'Error',
+        description: message,
+        status: 'error',
+        isClosable: true,
+      });
+    } else {
+      toast({
+        title: 'Success',
+        description: message,
+        status: 'success',
+        isClosable: true,
+      });
+      setNewProduct({
+        name: '',
+        price: 0,
+        image: '',
+      });
+    }
+
+    setLoading(false);
   }
 
   return (
@@ -69,7 +96,13 @@ export default function CreatePage() {
                 setNewProduct({ ...newProduct, image: e.target.value })
               }
             />
-            <Button colorScheme="blue" onClick={handleAddProduct} w="full">
+            <Button
+              isLoading={loading}
+              loadingText="Submitting"
+              colorScheme="blue"
+              onClick={handleAddProduct}
+              w="full"
+            >
               Add Product
             </Button>
           </VStack>

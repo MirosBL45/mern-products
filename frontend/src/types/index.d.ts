@@ -3,3 +3,8 @@ export type ProductProps = {
   price: number;
   image: string;
 };
+
+export type CreateProductResponse = {
+  success: boolean;
+  message: string;
+};
