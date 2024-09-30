@@ -5,6 +5,7 @@ export const useProductStore = create<{
   products: ProductProps[];
   setProducts: (products: ProductProps[]) => void;
   createProduct: (product: ProductProps) => Promise<CreateProductResponse>;
+  fetchProducts: () => void;
 }>((set) => ({
   products: [],
   setProducts: (products: ProductProps[]) => set({ products }),
@@ -24,5 +25,11 @@ export const useProductStore = create<{
     const fetchedData = await response.json();
     set((state) => ({ products: [...state.products, fetchedData.data] }));
     return { success: true, message: 'Product created successfully.' };
+  },
+  fetchProducts: async () => {
+    // by default fetch makes GET request when there is no 2nd argument
+    const response = await fetch('/api/products');
+    const fetchedData = await response.json();
+    set({ products: fetchedData.data });
   },
 }));
