@@ -5,7 +5,7 @@ export type ProductProps = {
   image: string;
 };
 
-export type CreDelProductResponse = {
+export type CUDProductResponse = {
   success: boolean;
   message: string;
 };

@@ -1,18 +1,22 @@
 import { create } from 'zustand';
-import { ProductProps, CreDelProductResponse } from '../types';
+import { ProductProps, CUDProductResponse } from '../types';
 
 export const useProductStore = create<{
   products: ProductProps[];
   setProducts: (products: ProductProps[]) => void;
-  createProduct: (product: ProductProps) => Promise<CreDelProductResponse>;
+  createProduct: (product: ProductProps) => Promise<CUDProductResponse>;
   fetchProducts: () => void;
-  deleteProduct: (pid: string) => Promise<CreDelProductResponse>;
+  deleteProduct: (pid: string) => Promise<CUDProductResponse>;
+  updateProduct: (
+    pid: string,
+    product: ProductProps
+  ) => Promise<CUDProductResponse>;
 }>((set) => ({
   products: [],
   setProducts: (products: ProductProps[]) => set({ products }),
   createProduct: async (
     newProduct: ProductProps
-  ): Promise<CreDelProductResponse> => {
+  ): Promise<CUDProductResponse> => {
     if (!newProduct.name || !newProduct.image || !newProduct.price) {
       return { success: false, message: 'Please fill in all fields.' };
     }
@@ -43,6 +47,25 @@ export const useProductStore = create<{
     // update the UI immediately without refresh in the browser
     set((state) => ({
       products: state.products.filter((product) => product._id !== pid),
+    }));
+    return { success: true, message: fetchedData.message };
+  },
+  updateProduct: async (pid: string, updatedProduct: ProductProps) => {
+    const response = await fetch(`/api/products/${pid}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedProduct),
+    });
+    const fetchedData = await response.json();
+    if (!fetchedData.success)
+      return { success: false, message: fetchedData.message };
+    // update the UI immediately without refresh in the browser
+    set((state) => ({
+      products: state.products.map((product) =>
+        product._id === pid ? fetchedData.data : product
+      ),
     }));
     return { success: true, message: fetchedData.message };
   },

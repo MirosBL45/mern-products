@@ -16,6 +16,16 @@ import {
   AlertDialogHeader,
   AlertDialogContent,
   AlertDialogOverlay,
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  VStack,
+  Input,
 } from '@chakra-ui/react';
 import { useProductStore } from '../store/product';
 import { useRef, useState } from 'react';
@@ -27,9 +37,13 @@ type ProductCardProps = {
 };
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const onClose = () => setIsOpen(false);
+  const [updatedProduct, setUpdatedProduct] = useState(product);
+
+  const [isOpenAlert, setIsOpenAlert] = useState(false);
+  const onCloseAlert = () => setIsOpenAlert(false);
   const cancelRef = useRef<any>();
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const { name, price, image, _id } = product;
 
@@ -55,7 +69,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   async function onDeleteConfirm() {
     await handleDeleteProduct(_id, deleteProduct, toast);
-    onClose();
+    onCloseAlert();
   }
 
   return (
@@ -82,21 +96,21 @@ export default function ProductCard({ product }: ProductCardProps) {
             aria-label="Search database"
             icon={<EditIcon />}
             colorScheme="blue"
+            onClick={onOpen}
           />
           <IconButton
             aria-label="Search database"
             icon={<DeleteIcon />}
-            // onClick={() => handleDeleteProduct(_id)}
-            onClick={() => setIsOpen(true)}
+            onClick={() => setIsOpenAlert(true)}
             colorScheme="red"
           />
         </HStack>
       </Box>
 
       <AlertDialog
-        isOpen={isOpen}
+        isOpen={isOpenAlert}
         leastDestructiveRef={cancelRef}
-        onClose={onClose}
+        onClose={onCloseAlert}
       >
         <AlertDialogOverlay>
           <AlertDialogContent>
@@ -110,7 +124,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             </AlertDialogBody>
 
             <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onClose}>
+              <Button ref={cancelRef} onClick={onCloseAlert}>
                 No
               </Button>
               <Button colorScheme="red" onClick={onDeleteConfirm} ml={3}>
@@ -120,6 +134,41 @@ export default function ProductCard({ product }: ProductCardProps) {
           </AlertDialogContent>
         </AlertDialogOverlay>
       </AlertDialog>
+
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Update Product</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <VStack spacing={4}>
+              <Input
+                placeholder="Product Name"
+                name="name"
+                value={updatedProduct.name}
+              />
+              <Input
+                placeholder="Price"
+                name="price"
+                type="number"
+                value={updatedProduct.price}
+              />
+              <Input
+                placeholder="Image URL"
+                name="image"
+                value={updatedProduct.image}
+              />
+            </VStack>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Update
+            </Button>
+            <Button variant="ghost">Cancel</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 }
