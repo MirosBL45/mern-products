@@ -5,7 +5,7 @@ export type ProductProps = {
   image: string;
 };
 
-export type CreateProductResponse = {
+export type CreDelProductResponse = {
   success: boolean;
   message: string;
 };

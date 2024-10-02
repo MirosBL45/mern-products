@@ -11,6 +11,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useProductStore } from '../store/product';
+import { showErrorToast, showSuccessToast } from '../components/ToastMessages';
 
 export default function CreatePage() {
   const [newProduct, setNewProduct] = useState<ProductProps>({
@@ -31,19 +32,21 @@ export default function CreatePage() {
     const { success, message } = await createProduct(newProduct);
 
     if (!success) {
-      toast({
-        title: 'Error',
-        description: message,
-        status: 'error',
-        isClosable: true,
-      });
+      // toast({
+      //   title: 'Error',
+      //   description: message,
+      //   status: 'error',
+      //   isClosable: true,
+      // });
+      showErrorToast(toast, message);
     } else {
-      toast({
-        title: 'Success',
-        description: message,
-        status: 'success',
-        isClosable: true,
-      });
+      // toast({
+      //   title: 'Success',
+      //   description: message,
+      //   status: 'success',
+      //   isClosable: true,
+      // });
+      showSuccessToast(toast, message);
       setNewProduct({
         name: '',
         price: 0,
