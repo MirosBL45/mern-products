@@ -52,13 +52,30 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   const toast = useToast();
 
-  const { deleteProduct } = useProductStore();
+  const { deleteProduct, updateProduct } = useProductStore();
+
   async function handleDeleteProduct(
     pid: any,
     deleteProduct: (pid: string) => Promise<any>,
     toast: any
   ) {
     const { success, message } = await deleteProduct(pid);
+
+    if (!success) {
+      showErrorToast(toast, message);
+    } else {
+      showSuccessToast(toast, message);
+    }
+  }
+
+  async function handleUpdateProduct(
+    pid: any,
+    updatedProduct: ProductProps,
+    toast: any
+  ) {
+    const { success, message } = await updateProduct(pid, updatedProduct);
+
+    onClose();
 
     if (!success) {
       showErrorToast(toast, message);
@@ -117,12 +134,10 @@ export default function ProductCard({ product }: ProductCardProps) {
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
               Delete Product
             </AlertDialogHeader>
-
             <AlertDialogBody>
               Are you sure you want to delete this product? This action cannot
               be undone.
             </AlertDialogBody>
-
             <AlertDialogFooter>
               <Button ref={cancelRef} onClick={onCloseAlert}>
                 No
@@ -146,26 +161,46 @@ export default function ProductCard({ product }: ProductCardProps) {
                 placeholder="Product Name"
                 name="name"
                 value={updatedProduct.name}
+                onChange={(e) =>
+                  setUpdatedProduct({ ...updatedProduct, name: e.target.value })
+                }
               />
               <Input
                 placeholder="Price"
                 name="price"
                 type="number"
                 value={updatedProduct.price}
+                onChange={(e) =>
+                  setUpdatedProduct({
+                    ...updatedProduct,
+                    price: parseFloat(e.target.value) || 0,
+                  })
+                }
               />
               <Input
                 placeholder="Image URL"
                 name="image"
                 value={updatedProduct.image}
+                onChange={(e) =>
+                  setUpdatedProduct({
+                    ...updatedProduct,
+                    image: e.target.value,
+                  })
+                }
               />
             </VStack>
           </ModalBody>
-
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
+            <Button
+              colorScheme="blue"
+              mr={3}
+              onClick={() => handleUpdateProduct(_id, updatedProduct, toast)}
+            >
               Update
             </Button>
-            <Button variant="ghost">Cancel</Button>
+            <Button variant="ghost" onClick={onClose}>
+              Cancel
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

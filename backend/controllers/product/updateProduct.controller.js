@@ -14,7 +14,7 @@ export default async function updateProduct(req, res) {
 
     try {
         const updatedProduct = await Product.findByIdAndUpdate(id, product, { new: true });
-        res.status(200).json({ success: true, data: updatedProduct });
+        res.status(200).json({ success: true, data: updatedProduct, message: 'Product updated successfully' });
     } catch (error) {
         console.error(`Oops: ${error.message}`);
         res.status(500).json({ success: false, message: 'Server error' });
