@@ -39,6 +39,8 @@ type ProductCardProps = {
 export default function ProductCard({ product }: ProductCardProps) {
   const [updatedProduct, setUpdatedProduct] = useState(product);
 
+  const [loading, setLoading] = useState(false);
+
   const [isOpenAlert, setIsOpenAlert] = useState(false);
   const onCloseAlert = () => setIsOpenAlert(false);
   const cancelRef = useRef<any>();
@@ -73,6 +75,8 @@ export default function ProductCard({ product }: ProductCardProps) {
     updatedProduct: ProductProps,
     toast: any
   ) {
+    setLoading(true);
+
     const { success, message } = await updateProduct(pid, updatedProduct);
 
     onClose();
@@ -82,6 +86,8 @@ export default function ProductCard({ product }: ProductCardProps) {
     } else {
       showSuccessToast(toast, message);
     }
+
+    setLoading(false);
   }
 
   async function onDeleteConfirm() {
@@ -192,6 +198,8 @@ export default function ProductCard({ product }: ProductCardProps) {
           </ModalBody>
           <ModalFooter>
             <Button
+              isLoading={loading}
+              loadingText="Updating"
               colorScheme="blue"
               mr={3}
               onClick={() => handleUpdateProduct(_id, updatedProduct, toast)}
